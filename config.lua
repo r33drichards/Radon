@@ -30,7 +30,11 @@ return {
         targetStock = 1024, -- full turtle (16*64) = cheapest; price climbs as it sells down
         exponent = 0.5,     -- curve steepness (higher = price reacts harder)
         floor = 0.01,       -- never sell below this (KRO; 0.01 = Kromer min unit)
-        ceiling = 0.10,     -- never charge more than this (KRO)
+        -- ceiling 0.02 keeps dried kelp block competitive with blaze rod as
+        -- fuel: kelp smelts 20 vs blaze's 12, and blaze sells at 0.01, so
+        -- kelp's fuel-parity price is ~0.0167/block. 0.01 undercuts blaze;
+        -- 0.02 (when low on stock) is ~parity. Above that, buyers pick blaze.
+        ceiling = 0.02,     -- never charge more than this (KRO)
         round = 0.01        -- round price to this step (Kromer's unit)
     },
     lang = {

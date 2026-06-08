@@ -10093,6 +10093,32 @@ do
     oldPrint("selfStock = " .. tostring(config.settings and config.settings.selfStock))
     oldPrint("pkey set = " .. tostring(config.currencies[1] ~= nil and config.currencies[1].pkey ~= nil))
     oldPrint("monitor cfg = " .. tostring(config.peripherals and config.peripherals.monitor))
+    oldPrint("Press any key for the MONITOR TEST...")
+    os.pullEvent("key")
+
+    -- Direct monitor write: isolates monitor writability from Radon's canvas.
+    -- If you SEE the blue TEST screen, the monitor works and the bug is in
+    -- Radon's rendering. If the monitor stays grey, the monitor Radon found is
+    -- not the screen you're looking at.
+    local mon = peripheral.find("monitor")
+    if not mon then
+        oldPrint("!! NO MONITOR FOUND via peripheral.find('monitor')")
+    else
+        oldPrint("monitor = " .. tostring(peripheral.getName(mon)))
+        local okScale = pcall(function() mon.setTextScale(1) end)
+        local w, h = mon.getSize()
+        oldPrint("monitor size = " .. tostring(w) .. "x" .. tostring(h) .. " scaleSet=" .. tostring(okScale))
+        pcall(function()
+            mon.setBackgroundColor(colors.blue)
+            mon.clear()
+            mon.setCursorPos(1, 1)
+            mon.setTextColor(colors.white)
+            mon.write("RADON MONITOR TEST")
+            mon.setCursorPos(1, 2)
+            mon.write("if you see this, the monitor works")
+        end)
+        oldPrint(">> LOOK AT THE MONITOR: blue TEST screen?")
+    end
     oldPrint("Press any key to continue to the shop...")
     os.pullEvent("key")
 end

@@ -46,19 +46,26 @@ end
 -- Fill in currency.pkey for any currency that doesn't have one, from the local
 -- store or by prompting. Call this after loading config and before validation.
 local function ensureCredentials(config)
+    -- In mock/offline mode no real key is needed; use a placeholder so config
+    -- validation (which requires pkey) passes and the shop renders.
+    local mock = config.settings and config.settings.mockKromer
     local store = loadStore()
     local changed = false
     for _, currency in ipairs(config.currencies) do
         if not currency.pkey or currency.pkey == "" then
-            local key = trim(store[currency.id])
-            while key == "" do
-                key = promptKey(currency.id)
+            if mock then
+                currency.pkey = "mock"
+            else
+                local key = trim(store[currency.id])
+                while key == "" do
+                    key = promptKey(currency.id)
+                end
+                if key ~= store[currency.id] then
+                    store[currency.id] = key
+                    changed = true
+                end
+                currency.pkey = key
             end
-            if key ~= store[currency.id] then
-                store[currency.id] = key
-                changed = true
-            end
-            currency.pkey = key
         end
     end
     if changed then

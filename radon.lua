@@ -487,13 +487,11 @@ local success, err = pcall(function() ShopRunner.launchShop(shopState, function(
             receivedEvent = true
             local name = e[1]
             if name == "timer" and e[2] == deltaTimer then
-                -- local clock = os.epoch("utc")
-                -- local dt = (clock - lastClock)/1000
-                -- t = t + dt
-                -- lastClock = clock
-                -- deltaTimer = os.startTimer(0)
-
-                -- hooks.tickAnimations(dt)
+                -- Periodic redraw so the monitor self-heals: it repaints from
+                -- "Connecting..." to the shop once the Kromer connection is
+                -- ready, and live-updates stock/price, even with no input
+                -- events. diffCanvasStack makes an unchanged redraw cheap.
+                deltaTimer = os.startTimer(0.5)
             elseif name == "timer" then
                 receivedEvent = false
             elseif name == "monitor_touch" and e[2] == peripheral.getName(display.mon) then

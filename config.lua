@@ -239,11 +239,13 @@ return {
         {
             id = "kromer", -- reconnected.cc's currency (Krist-compatible API)
             node = "https://kromer.reconnected.cc/api/krist/", -- Kromer endpoint (verified)
-            -- Run `/kromer info` in-game to get these two values:
-            host = nil, -- TODO: paste your Kromer address here, e.g. "k1a2b3c4d5" (nameless shop)
-            pkey = nil, -- TODO: click "Copy key" from /kromer info, paste it here
-            name = nil, -- leave nil (you don't have a .kro name) -> nameless mode
-            pkeyFormat = "raw", -- Currently must be 'raw' or 'kristwallet'
+            -- No key here! On first run Radon prompts for your private key
+            -- (hidden input) and saves it locally to wallet.secret. Get it
+            -- in-game with /kromer info -> "Copy key". Your address is derived
+            -- from the key automatically.
+            pkey = nil,
+            name = nil, -- nameless shop (no .kro name)
+            pkeyFormat = "raw", -- 'raw' (from /kromer info) or 'kristwallet'
             value = 1.0 -- Default scaling on item prices, can be overridden on a per-item basis
         },
         --[[{

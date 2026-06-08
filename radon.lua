@@ -67,6 +67,7 @@ end
 
 configHelpers.loadDefaults(config, configDefaults)
 ScanInventory.setSelfStock(config.settings and config.settings.selfStock)
+require("util.credentials").ensureCredentials(config)
 local configErrors = ConfigValidator.validateConfig(config)
 local productsErrors = ConfigValidator.validateProducts(products)
 

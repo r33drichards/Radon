@@ -372,6 +372,10 @@ function ShopState:setupKrypton()
         table.insert(self.kryptonListeners, function() kryptonWs:listen() end)
         self.kryptonReady = true
     end
+    -- Wake the render loop so the monitor repaints from "Connecting..." to the
+    -- shop the instant the connection is ready (the loop blocks on os.pullEvent
+    -- and ignores timers, so without an event it stays grey until you touch it).
+    os.queueEvent("radon_ready")
 end
 
 -- Anytime the shop state is resumed, animation should be finished instantly. (call animation finish hooks)

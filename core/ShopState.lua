@@ -400,6 +400,7 @@ function ShopState:runShop()
     self.currencies = {}
     self.kryptonListeners = {}
     self:setupKrypton()
+    print("DIAG: kryptonReady=" .. tostring(self.kryptonReady) .. " configReady=" .. tostring(self.config.ready) .. " currencies=" .. tostring(#self.currencies))
     ScanInventory.clearNbtCache()
     local transactions = {}
     parallel.waitForAny(function()

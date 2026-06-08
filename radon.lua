@@ -99,9 +99,17 @@ local configState = {
     eventHooks = eventHooks,
 }
 
+local __mainBranchLogged = nil
 local Main = Solyd.wrapComponent("Main", function(props)
     local canvas = useCanvas(display)
     local flatCanvas = {}
+    local __branch = (props.configState.config.ready and props.shopState.kryptonReady) and "SHOP"
+        or (not props.configState.config.ready) and "WAITING_CONFIG" or "CONNECTING"
+    if __mainBranchLogged ~= __branch then
+        __mainBranchLogged = __branch
+        print("DIAG Main branch = " .. __branch .. " (configReady=" .. tostring(props.configState.config.ready)
+            .. " kryptonReady=" .. tostring(props.shopState.kryptonReady) .. ")")
+    end
     if props.configState.config.ready and props.shopState.kryptonReady then
         local theme = props.configState.config.theme
             
@@ -577,6 +585,28 @@ end
 
 os.pullEvent = oldPullEvent
 if not success then
+    -- Show the crash on the MONITOR (in red) so it's visible there instead of
+    -- the grey clear that normally hides it.
+    pcall(function()
+        local mon = display and display.mon
+        if mon and mon.write then
+            mon.setTextScale(1)
+            mon.setBackgroundColor(colors.black)
+            mon.setTextColor(colors.red)
+            mon.clear()
+            local mw = ({ mon.getSize() })[1] or 40
+            mon.setCursorPos(1, 1)
+            mon.write("RADON CRASHED:")
+            local s = tostring(err)
+            local y, i = 2, 1
+            while i <= #s and y < 40 do
+                mon.setCursorPos(1, y)
+                mon.write(s:sub(i, i + mw - 1))
+                i = i + mw
+                y = y + 1
+            end
+        end
+    end)
     oldPrint("==== RADON CRASHED (this is the grey!) ====")
     oldPrint(tostring(err))
     oldPrint("Press any key...")

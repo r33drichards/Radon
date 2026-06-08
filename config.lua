@@ -1,7 +1,7 @@
 return {
     branding = {
-        title = nil,
-        subtitle = nil,
+        title = "Sustainable Biofuel",
+        subtitle = "Space Efficient",
     },
     settings = {
         hideUnavailableProducts = false,
@@ -237,13 +237,12 @@ return {
     },
     currencies = {
         {
-            id = "krist", -- if not krist or tenebra, must supply endpoint
-            -- node = "https://krist.dev/"
-            host = nil, -- Your krist address (only if using nameless shop, example: 'k123456789')
-            name = nil, -- Your krist name, usually ending in .kst (only if using krist name)
-            pkey = nil, -- Your private key, or password for kristwallet
+            id = "kromer", -- reconnected.cc's currency (Krist-compatible API)
+            node = "https://kromer.reconnected.cc/api/krist/", -- Kromer endpoint (verified)
+            host = nil, -- Your Kromer address (only if running a NAMELESS shop, e.g. 'k123456789')
+            name = nil, -- TODO: your Kromer name ending in .kro (e.g. "biofuel.kro"), or leave nil for nameless
+            pkey = nil, -- TODO: your Kromer wallet private key
             pkeyFormat = "raw", -- Currently must be 'raw' or 'kristwallet'
-            -- You can get your raw pkey from kristweb or using https://pkey.its-em.ma/
             value = 1.0 -- Default scaling on item prices, can be overridden on a per-item basis
         },
         --[[{

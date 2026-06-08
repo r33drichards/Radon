@@ -15,7 +15,8 @@ return {
         refundInvalidMetaname = true,
         refundMissingMetaname = true,
         refundInsufficentFunds = true,
-        selfStock = false
+        selfStock = false,
+        mockKromer = false
     },
     pricing = {
         enabled = false,

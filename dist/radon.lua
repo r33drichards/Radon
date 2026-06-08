@@ -2991,7 +2991,8 @@ return {
         refundInvalidMetaname = true,
         refundMissingMetaname = true,
         refundInsufficentFunds = true,
-        selfStock = false
+        selfStock = false,
+        mockKromer = false
     },
     pricing = {
         enabled = false,
@@ -3956,6 +3957,17 @@ function ShopState:setupKrypton()
         elseif not node and currency.id == "tenebra" then
             node = "https://tenebra.lil.gay/"
         end
+        if self.config.settings and self.config.settings.mockKromer then
+            -- Offline/dev mock: skip the real Kromer websocket so the shop
+            -- renders exactly as if connected. Lets us test rendering/products
+            -- with no live connection. NOTE: no real transactions happen here.
+            currency.krypton = {
+                currency = { currency_symbol = "KRO", address_prefix = "k", name_suffix = "kro", currency_name = "Kromer" },
+                privateKey = currency.pkey,
+            }
+            currency.host = "kmock000000"
+            table.insert(self.currencies, currency)
+        else
         currency.krypton = Krypton.new({
             privateKey = currency.pkey,
             node = node,
@@ -3990,6 +4002,7 @@ function ShopState:setupKrypton()
             end
         end
         table.insert(self.kryptonListeners, function() kryptonWs:listen() end)
+        end
         self.kryptonReady = true
     end
     -- Wake the render loop so the monitor repaints from "Connecting..." to the
@@ -4638,7 +4651,8 @@ local configSchema = {
         refundInvalidMetaname = "boolean",
         refundMissingMetaname = "boolean",
         refundInsufficentFunds = "boolean",
-        selfStock = "boolean?"
+        selfStock = "boolean?",
+        mockKromer = "boolean?"
     },
     pricing = {
         enabled = "boolean?",

@@ -17,7 +17,8 @@ local configSchema = {
         refundInvalidMetaname = "boolean",
         refundMissingMetaname = "boolean",
         refundInsufficentFunds = "boolean",
-        selfStock = "boolean?"
+        selfStock = "boolean?",
+        mockKromer = "boolean?"
     },
     pricing = {
         enabled = "boolean?",

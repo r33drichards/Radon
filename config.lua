@@ -239,9 +239,10 @@ return {
         {
             id = "kromer", -- reconnected.cc's currency (Krist-compatible API)
             node = "https://kromer.reconnected.cc/api/krist/", -- Kromer endpoint (verified)
-            host = nil, -- Your Kromer address (only if running a NAMELESS shop, e.g. 'k123456789')
-            name = nil, -- TODO: your Kromer name ending in .kro (e.g. "biofuel.kro"), or leave nil for nameless
-            pkey = nil, -- TODO: your Kromer wallet private key
+            -- Run `/kromer info` in-game to get these two values:
+            host = nil, -- TODO: paste your Kromer address here, e.g. "k1a2b3c4d5" (nameless shop)
+            pkey = nil, -- TODO: click "Copy key" from /kromer info, paste it here
+            name = nil, -- leave nil (you don't have a .kro name) -> nameless mode
             pkeyFormat = "raw", -- Currently must be 'raw' or 'kristwallet'
             value = 1.0 -- Default scaling on item prices, can be overridden on a per-item basis
         },

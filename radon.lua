@@ -78,6 +78,33 @@ else
     config.ready = true
 end
 
+-- TEMP STARTUP DIAGNOSTIC (build marker DIAG-1). Prints real state to the
+-- terminal and pauses so it can be read before the GUI takes over.
+do
+    local function diagErrs(label, errs)
+        if type(errs) ~= "table" then oldPrint(label .. " = none") return end
+        if errs[1] then
+            oldPrint(label .. " = " .. #errs)
+            for i = 1, #errs do oldPrint("  ! " .. tostring(errs[i].path) .. " : " .. tostring(errs[i].error)) end
+        elseif errs.error then
+            oldPrint(label .. " = 1 :: " .. tostring(errs.path) .. " : " .. tostring(errs.error))
+        else
+            oldPrint(label .. " = none")
+        end
+    end
+    oldPrint("==== RADON DIAG-1 ====")
+    oldPrint("config.ready = " .. tostring(config.ready))
+    diagErrs("configErrors", configErrors)
+    diagErrs("productsErrors", productsErrors)
+    oldPrint("products = " .. tostring(#products))
+    oldPrint("mockKromer = " .. tostring(config.settings and config.settings.mockKromer))
+    oldPrint("selfStock = " .. tostring(config.settings and config.settings.selfStock))
+    oldPrint("pkey set = " .. tostring(config.currencies[1] ~= nil and config.currencies[1].pkey ~= nil))
+    oldPrint("monitor cfg = " .. tostring(config.peripherals and config.peripherals.monitor))
+    oldPrint("Press any key to continue to the shop...")
+    os.pullEvent("key")
+end
+
 local peripherals = {}
 configHelpers.getPeripherals(config, peripherals)
 

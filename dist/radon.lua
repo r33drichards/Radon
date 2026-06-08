@@ -10608,10 +10608,8 @@ if not success then
             end
         end
     end)
-    oldPrint("==== RADON CRASHED (this is the grey!) ====")
+    oldPrint("==== RADON CRASHED ====")
     oldPrint(tostring(err))
-    oldPrint("Press any key...")
-    pcall(function() os.pullEvent("key") end)
     if eventHooks and eventHooks.programError then
         eventHook.execute(eventHooks.programError, err)
     end

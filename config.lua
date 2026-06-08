@@ -21,10 +21,9 @@ return {
         -- you're selling inside the turtle. Requires outputChest = "self".
         selfStock = true,
         -- mockKromer: TEST/OFFLINE mode. Skips the real Kromer websocket and
-        -- renders the shop as if connected, so we can confirm products display
-        -- independently of the network. NO REAL SALES happen while true.
-        -- Set back to false for a live shop.
-        mockKromer = true
+        -- renders the shop as if connected (NO REAL SALES). true only for
+        -- diagnosing rendering; false for a live shop.
+        mockKromer = false
     },
     -- Supply-based auto-pricing. Price floats with how much stock is on hand:
     --   price = clamp( base * (targetStock/stock)^exponent, floor, ceiling )

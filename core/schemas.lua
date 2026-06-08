@@ -19,6 +19,14 @@ local configSchema = {
         refundInsufficentFunds = "boolean",
         selfStock = "boolean?"
     },
+    pricing = {
+        enabled = "boolean?",
+        targetStock = "number?",
+        exponent = "number?",
+        floor = "number?",
+        ceiling = "number?",
+        round = "number?"
+    },
     lang = {
         footer = "string",
         footerNoName = "string?",

@@ -17,6 +17,14 @@ return {
         refundInsufficentFunds = true,
         selfStock = false
     },
+    pricing = {
+        enabled = false,
+        targetStock = 1024,
+        exponent = 0.5,
+        floor = 0.01,
+        ceiling = 0.10,
+        round = 0.01
+    },
     lang = {
         footer = "/pay <item>@%name% <amt>",
         footerNoName = "/pay %addr% <amt> <item>",

@@ -21,6 +21,18 @@ return {
         -- you're selling inside the turtle. Requires outputChest = "self".
         selfStock = true
     },
+    -- Supply-based auto-pricing. Price floats with how much stock is on hand:
+    --   price = clamp( base * (targetStock/stock)^exponent, floor, ceiling )
+    -- base = each product's price in products.lua (0.01 KRO here).
+    -- Plenty of stock -> price sits at floor; running low -> price climbs.
+    pricing = {
+        enabled = true,
+        targetStock = 1024, -- full turtle (16*64) = cheapest; price climbs as it sells down
+        exponent = 0.5,     -- curve steepness (higher = price reacts harder)
+        floor = 0.01,       -- never sell below this (KRO; 0.01 = Kromer min unit)
+        ceiling = 0.10,     -- never charge more than this (KRO)
+        round = 0.01        -- round price to this step (Kromer's unit)
+    },
     lang = {
         footer = "/pay <item>@%name% <amt>",
         footerNoName = "/pay %addr% <amt> <item>",

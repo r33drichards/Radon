@@ -12,8 +12,8 @@
 -- set DEFAULT_PRICE below. (Skipping unpriced items protects you from
 -- accidentally selling something valuable for nothing.)
 local prices = {
-    ["minecraft:stick"]       = 0.1,
-    ["minecraft:lapis_block"] = 9.0,
+    -- Per-item overrides go here, e.g. ["minecraft:diamond"] = 5.0
+    -- Anything not listed uses DEFAULT_PRICE below.
 }
 
 -- Optional: override the auto pay-address (the metaname customers /pay to).
@@ -23,9 +23,10 @@ local addresses = {
     -- ["minecraft:lapis_block"] = "lapis",
 }
 
--- Set to a number to sell EVERY item in the turtle at that price even if it
--- isn't in `prices`. Leave nil to only sell items you've priced.
-local DEFAULT_PRICE = nil
+-- Flat baseline price (KRO) for every item in the turtle not listed in
+-- `prices`. 0.01 = Kromer's smallest payable unit. (Auto-pricing that swings
+-- around this baseline by supply/demand is coming as a follow-up.)
+local DEFAULT_PRICE = 0.01
 
 -- You can still add fully manual products too (categories, predicates,
 -- bundles, priceOverrides -- see the README). These are always included.

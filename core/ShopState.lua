@@ -403,6 +403,14 @@ function ShopState:runShop()
     ScanInventory.clearNbtCache()
     local transactions = {}
     parallel.waitForAny(function()
+        -- Force a periodic repaint so the shop appears and live-updates with
+        -- no user input. Custom events reliably wake the render loop here (the
+        -- render-side timer alone wasn't repainting on some CC builds).
+        while self.running do
+            os.queueEvent("radon_redraw")
+            sleep(0.5)
+        end
+    end, function()
         while true do
             local event, transactionEvent = os.pullEvent("transaction")
             if event == "transaction" then

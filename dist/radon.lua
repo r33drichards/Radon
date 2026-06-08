@@ -4024,6 +4024,14 @@ function ShopState:runShop()
     ScanInventory.clearNbtCache()
     local transactions = {}
     parallel.waitForAny(function()
+        -- Force a periodic repaint so the shop appears and live-updates with
+        -- no user input. Custom events reliably wake the render loop here (the
+        -- render-side timer alone wasn't repainting on some CC builds).
+        while self.running do
+            os.queueEvent("radon_redraw")
+            sleep(0.5)
+        end
+    end, function()
         while true do
             local event, transactionEvent = os.pullEvent("transaction")
             if event == "transaction" then
@@ -10070,58 +10078,6 @@ else
     config.ready = true
 end
 
--- TEMP STARTUP DIAGNOSTIC (build marker DIAG-1). Prints real state to the
--- terminal and pauses so it can be read before the GUI takes over.
-do
-    local function diagErrs(label, errs)
-        if type(errs) ~= "table" then oldPrint(label .. " = none") return end
-        if errs[1] then
-            oldPrint(label .. " = " .. #errs)
-            for i = 1, #errs do oldPrint("  ! " .. tostring(errs[i].path) .. " : " .. tostring(errs[i].error)) end
-        elseif errs.error then
-            oldPrint(label .. " = 1 :: " .. tostring(errs.path) .. " : " .. tostring(errs.error))
-        else
-            oldPrint(label .. " = none")
-        end
-    end
-    oldPrint("==== RADON DIAG-1 ====")
-    oldPrint("config.ready = " .. tostring(config.ready))
-    diagErrs("configErrors", configErrors)
-    diagErrs("productsErrors", productsErrors)
-    oldPrint("products = " .. tostring(#products))
-    oldPrint("mockKromer = " .. tostring(config.settings and config.settings.mockKromer))
-    oldPrint("selfStock = " .. tostring(config.settings and config.settings.selfStock))
-    oldPrint("pkey set = " .. tostring(config.currencies[1] ~= nil and config.currencies[1].pkey ~= nil))
-    oldPrint("monitor cfg = " .. tostring(config.peripherals and config.peripherals.monitor))
-    oldPrint("Press any key for the MONITOR TEST...")
-    os.pullEvent("key")
-
-    -- Direct monitor write: isolates monitor writability from Radon's canvas.
-    -- If you SEE the blue TEST screen, the monitor works and the bug is in
-    -- Radon's rendering. If the monitor stays grey, the monitor Radon found is
-    -- not the screen you're looking at.
-    local mon = peripheral.find("monitor")
-    if not mon then
-        oldPrint("!! NO MONITOR FOUND via peripheral.find('monitor')")
-    else
-        oldPrint("monitor = " .. tostring(peripheral.getName(mon)))
-        local okScale = pcall(function() mon.setTextScale(1) end)
-        local w, h = mon.getSize()
-        oldPrint("monitor size = " .. tostring(w) .. "x" .. tostring(h) .. " scaleSet=" .. tostring(okScale))
-        pcall(function()
-            mon.setBackgroundColor(colors.blue)
-            mon.clear()
-            mon.setCursorPos(1, 1)
-            mon.setTextColor(colors.white)
-            mon.write("RADON MONITOR TEST")
-            mon.setCursorPos(1, 2)
-            mon.write("if you see this, the monitor works")
-        end)
-        oldPrint(">> LOOK AT THE MONITOR: blue TEST screen?")
-    end
-    oldPrint("Press any key to continue to the shop...")
-    os.pullEvent("key")
-end
 
 local peripherals = {}
 configHelpers.getPeripherals(config, peripherals)

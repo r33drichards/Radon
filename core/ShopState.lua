@@ -253,13 +253,21 @@ function ShopState:handlePurchase(transaction, meta, sentMetaname, transactionCu
                 if not turtle then
                     error("Self output but not a turtle!")
                 end
-                if not self.peripherals.modem.getNameLocal() then
-                    error("Modem is not connected! Try right clicking it")
+                if productSource.inventory == "self" then
+                    -- Stock lives in the turtle's own inventory: drop straight
+                    -- from the source slot, no modem/network move required.
+                    if turtle.getSelectedSlot() ~= productSource.slot then
+                        turtle.select(productSource.slot)
+                    end
+                else
+                    if not self.peripherals.modem or not self.peripherals.modem.getNameLocal() then
+                        error("Modem is not connected! Try right clicking it")
+                    end
+                    if turtle.getSelectedSlot() ~= 1 then
+                        turtle.select(1)
+                    end
+                    peripheral.call(productSource.inventory, "pushItems", self.peripherals.modem.getNameLocal(), productSource.slot, productSource.amount, 1)
                 end
-                if turtle.getSelectedSlot() ~= 1 then
-                    turtle.select(1)
-                end
-                peripheral.call(productSource.inventory, "pushItems", self.peripherals.modem.getNameLocal(), productSource.slot, productSource.amount, 1)
                 if self.config.settings.dropDirection == "forward" then
                     turtle.drop(productSource.amount)
                 elseif self.config.settings.dropDirection == "up" then

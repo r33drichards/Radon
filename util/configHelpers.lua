@@ -1,7 +1,9 @@
 local score = require("util.score")
 
 function getPeripherals(config, peripherals)
-    
+    -- When selling from the turtle's own inventory, a wired modem / chest
+    -- network is optional -- don't hard-fail if none is present.
+    local selfStock = config.settings and config.settings.selfStock
     local modem
     local failed = 0
     repeat
@@ -12,6 +14,7 @@ function getPeripherals(config, peripherals)
                 return not peripheral.wrap(pName).isWireless()
             end)
             if not modem then
+                if selfStock then break end
                 error("No modem found")
             end
             if not modem.getNameLocal() then
@@ -23,7 +26,7 @@ function getPeripherals(config, peripherals)
             sleep(2)
         end
     until modem or failed > 2
-    if not modem then
+    if not modem and not selfStock then
         error("No modem found")
     end
 

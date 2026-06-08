@@ -16,7 +16,8 @@ local configSchema = {
         showFooter = "boolean",
         refundInvalidMetaname = "boolean",
         refundMissingMetaname = "boolean",
-        refundInsufficentFunds = "boolean"
+        refundInsufficentFunds = "boolean",
+        selfStock = "boolean?"
     },
     lang = {
         footer = "string",

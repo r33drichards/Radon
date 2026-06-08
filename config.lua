@@ -15,7 +15,11 @@ return {
         showFooter = true,
         refundInvalidMetaname = true,
         refundMissingMetaname = true,
-        refundInsufficentFunds = true
+        refundInsufficentFunds = true,
+        -- selfStock: sell straight from the turtle's OWN inventory.
+        -- No stock chest / wired modem / cable needed -- just put the items
+        -- you're selling inside the turtle. Requires outputChest = "self".
+        selfStock = true
     },
     lang = {
         footer = "/pay <item>@%name% <amt>",

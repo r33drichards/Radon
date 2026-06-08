@@ -45,9 +45,49 @@ function partialObjectMatches(partialObject, object)
     return true
 end
 
+-- selfStock: when enabled, the turtle's own inventory is treated as a stock
+-- source, so a shop can run with no stock chest / wired modem / cable. The
+-- self inventory is exposed under the reserved name "self".
+local selfStock = false
+local function setSelfStock(enabled)
+    selfStock = enabled and true or false
+end
+
+local function selfList()
+    local slots = {}
+    for i = 1, 16 do
+        local detail = turtle.getItemDetail(i)
+        if detail then
+            slots[i] = detail
+        end
+    end
+    return slots
+end
+
+local function getInventoryName(inventory)
+    if inventory.__self then
+        return "self"
+    end
+    return peripheral.getName(inventory)
+end
+
+local function listInventory(inventory)
+    if inventory.__self then
+        return selfList()
+    end
+    return inventory.list()
+end
+
+local function invGetItemDetail(inventoryName, slot)
+    if inventoryName == "self" then
+        return turtle.getItemDetail(slot, true)
+    end
+    return peripheral.call(inventoryName, "getItemDetail", slot)
+end
+
 local function predicateMatches(predicates, item, allowCached)
     if not allowCached or not item.cachedMeta then
-        local meta = peripheral.call(item.inventory, "getItemDetail", item.slot)
+        local meta = invGetItemDetail(item.inventory, item.slot)
         item.cachedMeta = meta
     end
     return partialObjectMatches(predicates, item.cachedMeta)
@@ -109,13 +149,16 @@ local function getInventories()
             table.insert(inventories, peripheral.wrap(name))
         end
     end
+    if selfStock and turtle then
+        table.insert(inventories, { __self = true })
+    end
     return inventories
 end
 
 local function getInventoryItems(inventory, products)
-    local inventoryName = peripheral.getName(inventory)
+    local inventoryName = getInventoryName(inventory)
     local items = {}
-    local slots = inventory.list()
+    local slots = listInventory(inventory)
     for slot, item in pairs(slots) do
         if item then
             item.inventory = inventoryName
@@ -223,7 +266,7 @@ local function findProductItemsFrom(product, quantity, items, cached)
         end
         if item.name == product.modid and (not cached or not product.predicates or cacheHit or (item.cachedMeta and partialObjectMatches(product.predicates, item.cachedMeta))) then
             if cached or product.predicates then
-                item = peripheral.call(inventory, "getItemDetail", slot)
+                item = invGetItemDetail(inventory, slot)
             end
             if item then
                 if item.name ~= product.modid or (product.predicates and not partialObjectMatches(product.predicates, item)) then
@@ -274,5 +317,6 @@ return {
     updateProductInventory = updateProductInventory,
     getItemCache = getItemCache,
     findProductItems = findProductItems,
+    setSelfStock = setSelfStock,
     clearNbtCache = clearNbtCache
 }

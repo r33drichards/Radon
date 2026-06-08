@@ -66,6 +66,7 @@ end
 --- End Imports
 
 configHelpers.loadDefaults(config, configDefaults)
+ScanInventory.setSelfStock(config.settings and config.settings.selfStock)
 local configErrors = ConfigValidator.validateConfig(config)
 local productsErrors = ConfigValidator.validateProducts(products)
 
